@@ -1,0 +1,38 @@
+body{
+    
+    margin-left: 15%;
+    margin-right: 15%;
+
+
+}
+.board{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    height: 600px;
+    width: 600px;
+}
+
+.cell{
+
+    border: 1px solid black;
+}
+
+
+.squere_1{
+
+    background-color: blue;
+}
+
+.red{
+
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.black{
+    background-color: black;
+    border-radius: 50%;
+    border: 1px solid black;
+} 
