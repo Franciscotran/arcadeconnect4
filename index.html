@@ -11,12 +11,49 @@
 </head>
 <body>
     <h1 id="win">Welcome to connect 4 </h1>
+
+
+         <div id = 'players'>
+        <label for="Player options">Chose playmode</label>
+        <select id="playerOptions" >
+        <option value="pleaseSelect">Please Select</option>
+        <option value="singlePlayer">Single Player</option>
+        <option value="MultiPlayer">Multi Player</option>
+        </select>
+        <button onclick="playerOptions()">Select</button>
+      </div>
+
       
-    <h3 id = 'player'></h3>   
+
+
+      <div id='singlePlayerInput' class="singlePlayerInput" >
+        <input value ="" id="singlePlayerName" placeholder="Enter player name here ">
+        <button onclick="playerNameSingle()">Start Game</button>
+      </div>
+
+
+      <div id='playerInputsNames' class="multiPlayerModeNameInput" >
+
+        <input value="" id="multiPlayer1" placeholder="Enter player 1 name here ">
+        <input value="" id="multiPlayer2" placeholder="Enter player 2 name here ">
+        <button onclick="playerNames()">Start Game</button>
+      </div>
+      
+
+      <div>
+      <h3 id = 'player'></h3> <button class="hiddenButton" id="restart"> Reset Game</button>
+     </div>
+
+     
+
+    
+   
     
  <main >   
 <div id = 'app'></div>
  <!-- <div class= "board"></div> -->
+
+ 
 </main>
 </body>
 </html>

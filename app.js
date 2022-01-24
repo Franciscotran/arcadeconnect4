@@ -1,10 +1,11 @@
-console.log("this is the begining of my app.")
-
-
 const state = {
     board: [],
     player: '',
-    gameMode: '', 
+    gameWin: false, 
+    playerMode: '',
+    player1Name: '',
+    player2Name: ''
+
 }
 
 
@@ -19,11 +20,8 @@ function buildBoard(){
 
     state.board.push(row)
     }
-    document.getElementById('player').innerHTML = 'Player 1 Go'
-    state.player = 'player1'
-    // console.log(state.board);
+    
 }
-
 
 let count = 0
 
@@ -31,6 +29,120 @@ let count = 0
 
 const boardElement = document.createElement("div");
 const appElement = document.getElementById("app");
+
+
+
+function playerOptions(){
+
+    let players = document.getElementById("playerOptions");
+    let selected = players.options[players.selectedIndex].text;
+
+    if(selected == 'Single Player'){
+        document.getElementById('players').classList.add('hide')
+        document.getElementById('singlePlayerInput').classList.remove("singlePlayerInput")
+
+
+    }else if(selected == 'Multi Player'){
+
+        document.getElementById('players').classList.add('hide')
+
+        document.getElementById('playerInputsNames').classList.remove("multiPlayerModeNameInput")
+    }
+
+}
+
+
+
+function cpuPlay(){
+
+    currentPlayer =state.player
+
+    if(state.player2Name == "CPU" && currentPlayer == 'player2' ){
+    
+        let random = Math.floor(Math.random() * 6)
+        currentPlayer = state.player;
+    
+        for(let i=5; i> -1; i--){
+    
+        if(state.player2Name == 'CPU'&&(state.board[i][random] !== 5) && (state.board[i][random] !== 1) &&currentPlayer == 'player2'){
+    
+            state.board[i][random] = 5
+    
+            const squareData = document.querySelectorAll(`[data-row="${i}"]`);
+            squareData[random].classList.add('black');
+            state.player = 'player1'
+    
+           document.getElementById('player').innerHTML = `Player ${state.player1Name} Go`
+    
+           i = i - 6   
+        }
+      }
+    }
+    
+    }
+    
+
+
+function playerNameSingle(){
+
+    let playerName = document.getElementById('singlePlayerName').value
+    state.player1Name = `${playerName}`
+    state.player2Name = "CPU"
+    document.getElementById("singlePlayerInput").classList.add("singlePlayerInput")
+    
+     random =  Math.random()
+
+     if(random <= 0.49){
+
+        state.player = 'player1'
+        document.getElementById('player').innerHTML = `Player ${state.player1Name} Go`
+        
+     }else{
+
+        state.player = 'player2'
+        document.getElementById('player').innerHTML = `Player ${state.player2Name} Go`
+        setTimeout(cpuPlay, 3000);
+
+     }
+
+
+     document.getElementById("restart").classList.add("restart")
+     document.getElementById("restart").classList.remove("hiddenButton")
+     
+
+}
+
+function playerNames(){
+
+    let playerName = document.getElementById('multiPlayer1').value
+    let playerName2 = document.getElementById('multiPlayer2').value
+    
+    state.player1Name = `${playerName}`
+    state.player2Name = `${playerName2}`
+    document.getElementById('playerInputsNames').classList.add("multiPlayerModeNameInput")
+    
+
+     random =  Math.random()
+
+     if(random <= 0.49){
+
+        state.player = 'player1'
+        document.getElementById('player').innerHTML = `Player ${state.player1Name} Go`
+        
+     }else{
+
+        state.player = 'player2'
+        document.getElementById('player').innerHTML = `Player ${state.player2Name} Go`
+        
+
+     }
+
+     document.getElementById("restart").classList.add("restart")
+     document.getElementById("restart").classList.remove("hiddenButton")
+
+}
+
+
 
 
 function renderBoard(){
@@ -48,13 +160,9 @@ function renderBoard(){
         boardElement.appendChild(cellElement);
 
         }
-
     }
-//   console.log(boardElement);
 
 }
-
-
 
 
 function bootstrap(){
@@ -62,19 +170,265 @@ function bootstrap(){
     appElement.appendChild(boardElement);
     boardElement.classList.add("board");
     buildBoard();
-    renderBoard();
-    
-    
+    renderBoard();   
 
 }
 
+document.getElementById("restart").addEventListener("click", function(e){
+   
+    e.preventDefault();
 
+        /*--- Reset game ---*/
+  
+        location.reload();
+    
+    
+
+
+})
+
+
+
+
+
+const checkWin = () =>{
+
+    let currentBoard = state.board
+
+    //checking horizontals
+
+    let count1 = 0
+    let count5 = 0
+
+    for(let i= 5;i>= 0;i--){
+
+        for(let j=0; j<=6; j++){
+
+
+            if(currentBoard[i][j] == 1){
+
+                count5 = 0
+
+                count1 = count1 +1 
+
+            } else if(currentBoard[i][j] == 5 ){
+
+                count1 = 0 
+
+                count5 = count5 + 1
+
+            }else if(currentBoard[i][j] == ''){
+
+                count1 = 0
+                count5 = 0
+            }  
+
+
+            if(count1 == 4) {
+
+
+                document.getElementById('win').innerHTML = `Player ${state.player1Name} Wins Congrats`
+                state.gameWin = true
+                state.player= ""
+                return
+
+            }else if(count5 == 4){
+
+                document.getElementById('win').innerHTML = `Player ${state.player2Name} Wins Congrats`
+                state.gameWin = true
+                state.player= ""
+                return
+            }
+
+            
+
+        }
+
+        count1 = 0
+        count5 = 0
+
+    }
+
+// checking on the verticals
+
+    for(let j=0; j<=6; j++){
+
+
+       for(let i=5; i>=0; i--){        
+
+        if(currentBoard[i][j] == 1){
+
+            count5 = 0
+
+            count1 = count1 +1 
+
+        } else if(currentBoard[i][j] == 5 ){
+
+            count1 = 0 
+
+            count5 = count5 + 1
+
+        }else if(currentBoard[i][j] == ''){
+
+            count1 = 0
+            count5 = 0
+        }  
+
+        if(count1 == 4) {
+
+
+            document.getElementById('win').innerHTML = `Player ${state.player1Name} Wins Congrats`
+            state.gameWin = true
+            state.player= ""
+            return
+
+        }else if(count5 == 4){
+
+            document.getElementById('win').innerHTML = `Player ${state.player2Name} Wins Congrats`
+            state.gameWin = true
+            state.player= ""
+            return
+        }
+        }
+        // we will now continue with the diagonals
+    }
+    const newArray = [];
+
+    for(let j=0; j<=6; j++){
+
+        for(let i=5; i>=0; i--){     
+            
+          newArray.push(currentBoard[i][j])     
+        }
+    }
+    
+   // check every individual diagonal.
+
+   const diagonal1 =[];
+   const diagonal2 =[];
+   const diagonal3 =[];
+   const diagonal4 =[];
+   const diagonal5 =[];
+   const diagonal6 =[];
+   const diagonal7 =[];
+   const diagonal8 =[];
+   const diagonal9 =[];
+   const diagonal10 =[];
+   const diagonal11 =[];
+   const diagonal12 =[];
+   const diagonal =
+   [ diagonal1, diagonal2, diagonal3, diagonal4,diagonal5,diagonal6,diagonal7, diagonal8, diagonal9, diagonal10,diagonal11,diagonal12];
+  
+   // first side of diagonals 
+  for(let i=0; i<41; i= i + 7){
+    diagonal1.push(newArray[i])
+   
+   }
+   for(let i=1; i<41; i= i + 7){
+    diagonal2.push(newArray[i])
+   
+   }
+   for(let i=2; i<41; i= i + 7){
+    diagonal3.push(newArray[i])
+   
+   }
+   for(let i=6; i<41; i= i + 7){
+    diagonal4.push(newArray[i])
+   
+   }
+   for(let i=12; i<41; i= i + 7){
+    diagonal5.push(newArray[i])
+   
+   } for(let i=18; i<41; i= i + 7){
+    diagonal6.push(newArray[i])
+   
+   }
+
+   //other side of diagonals 
+   for(let i=3; i<41; i= i + 5){
+    diagonal7.push(newArray[i])
+   
+   }
+   for(let i=4; i<41; i= i + 5){
+    diagonal8.push(newArray[i])
+   
+   }
+   for(let i=5; i<41; i= i + 5){
+    diagonal9.push(newArray[i])
+   
+   }
+   for(let i=11; i<41; i= i + 7){
+    diagonal10.push(newArray[i])
+   
+   }
+   for(let i=17; i<41; i= i + 7){
+    diagonal11.push(newArray[i])
+   
+   } for(let i=23; i<41; i= i + 7){
+    diagonal12.push(newArray[i])
+   
+   }
+
+
+   for(let i=0;i<=11;i++){
+
+    for(let j=0;j<=5;j++){
+
+        if(diagonal[i][j] == 1){
+
+            count5 = 0
+
+            count1 = count1 +1 
+
+        } else if(diagonal[i][j] == 5 ){
+
+            count1 = 0 
+
+            count5 = count5 + 1
+
+        }else if(diagonal[i][j] == ''){
+
+            count1 = 0
+            count5 = 0
+        }  
+
+        if(count1 == 4) {
+
+
+            document.getElementById('win').innerHTML = `Player ${state.player1Name} Wins Congrats`
+            state.gameWin = true
+            state.player= ""
+            return
+
+        }else if(count5 == 4){
+
+            document.getElementById('win').innerHTML = `Player ${state.player2Name} Wins Congrats`
+            state.gameWin = true
+            state.player= ""
+            return
+        }
+    
+    }
+   }
+    
+}
+   
+
+
+  
 
 
 
 
 
 document.getElementById('app').addEventListener('click', function(e){
+
+    
+  
+   
+
+    if(state.gameWin == false){
+
 
     // checkRows()
     
@@ -95,6 +449,8 @@ document.getElementById('app').addEventListener('click', function(e){
 
     currentRow = state.board[+squareRow]
     currentCol = +squareColum
+    
+    
 
 
     for(let i=5; i> -1; i--){
@@ -108,12 +464,14 @@ document.getElementById('app').addEventListener('click', function(e){
 
             state.player = 'player2'
 
-          document.getElementById('player').innerHTML = 'Player 2 Go'
-              
+          document.getElementById('player').innerHTML = `Player ${state.player2Name} Go`
+  
             
             i = i - 6
 
-        } else if((state.board[i][squareColum] !== 5) && (state.board[i][squareColum] !== 1) &&currentPlayer == 'player2'){
+            setTimeout(cpuPlay, 3000);
+
+        } else if(state.player2Name !== 'CPU' &&(state.board[i][squareColum] !== 5) && (state.board[i][squareColum] !== 1) &&currentPlayer == 'player2'){
 
             state.board[i][squareColum] = 5
 
@@ -121,7 +479,7 @@ document.getElementById('app').addEventListener('click', function(e){
             squareData[squareColum].classList.add('black');
             state.player = 'player1'
 
-           document.getElementById('player').innerHTML = 'Player 1 Go'
+           document.getElementById('player').innerHTML = `Player ${state.player1Name} Go`
 
 
             // newRow = i
@@ -132,103 +490,33 @@ document.getElementById('app').addEventListener('click', function(e){
     }
 
 
- });
-
-
-
-
-
-
- document.getElementById('app').addEventListener('click', function(e){
-
-    let currentBoard = state.board
-
-    
-    //we get the number of the colum that we get 
-    let columnum =(e.target.dataset.colum);
-    //we get the number of row we get
-    let rownum = (e.target.dataset.row);
-
-    let rowsRed = 0
-    let rowsBlack = 0
-    let colsRed = 0
-    let colsBlack = 0
-    
-    // console.log(columnum);
-    
-
-    for(let i=5; i> -1; i--){
-
-        if(currentBoard[i][columnum] == 1 ){
-            rowsRed = rowsRed + 1
-            if(rowsBlack !== 0){
-                rowsBlack = rowsBlack - 5
-            }
-        }
-
-        if(currentBoard[i][columnum] == 5 ){
-            rowsBlack = rowsBlack + 5
-            if(rowsRed !== 0){
-            rowsRed = rowsRed - 1
-             }
-        }
-
-        if(rowsRed == 4 ){
-            document.getElementById('win').innerHTML = "Player 1 Red Wins Congrats"
-           
-        }
-
-        if(rowsBlack == 20 ){
-            document.getElementById('win').innerHTML = "Player 2 Black Wins Congrats"
-            return
-        }
-
-
-        const dataRow = document.querySelectorAll(`[data-row="${i}"]`);
-
-        for( let j=0; j<7;j++){
-
-            let checkData = dataRow[j]
-
-            if(checkData.classList.contains('red')){
-
-                 colsRed = colsRed + 1
-
-            }
-
-            if(checkData.classList.contains('black')){
-
-                colsBlack = colsBlack + 1
-
-           }
-
-            // console.log(checkData)
-
-
-        }
-
-
-
-
-        
-        
-            // squareData[coluolumnum].classList.add('red');
-     
-    }
-
-    console.log(colsRed);
-    console.log(colsBlack);
-
-   
-    // console.log(colsRed)
-    // console.log(colsBlack)
-
+    checkWin();
+  }
  
-
  });
-
-
-
-
 
 bootstrap();
+
+
+
+
+
+// function cpuPlay(){
+
+//     if(count5 <=2){
+
+//        let random = Math.floor(Math.random() * 6)
+
+//        state.board[0][random] = 5
+//        const squareData = document.querySelectorAll(`[data-row="${0}"]`);
+//        squareData[random].classList.add('black');
+//        state.player = 'player1'
+
+//        document.getElementById('player').innerHTML = `Player ${state.player1Name} Go`
+
+//     }
+//     }
+
+//     cpuPlay();
+
+
